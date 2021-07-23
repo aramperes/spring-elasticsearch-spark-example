@@ -56,6 +56,9 @@ services:
     environment:
       - DEMO_SPARK_URI=spark://spark:7077
       - DEMO_SPARK_APPNAME=demo
+      - DEMO_SPARK_JARS=/opt/app-lib.jar
+      - DEMO_SPARK_ELASTIC_NODES=elasticsearch
+      - DEMO_SPARK_ELASTIC_PORT=9200
       - DEMO_INDEXNAME_PEOPLE=people
       - DEMO_INDEXNAME_CITIES=cities
       - SPRING_ELASTICSEARCH_REST_URIS=http://elasticsearch:9200

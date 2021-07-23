@@ -14,6 +14,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -122,7 +123,13 @@ public class IngestService {
 
     private void createIndex(String indexName) throws IOException {
         final CreateIndexRequest request = new CreateIndexRequest(indexName)
-                .mapping(getMappingJson(indexName), XContentType.JSON);
+                .mapping(getMappingJson(indexName), XContentType.JSON)
+                .settings(Settings.builder()
+                        // Logs all queries to Elasticsearch container log
+                        .put("index.search.slowlog.threshold.query.info", "0s")
+                        .put("index.search.slowlog.threshold.fetch.info", "0s")
+                        .put("index.search.slowlog.level", "info")
+                        .build());
         client.indices().create(request, RequestOptions.DEFAULT);
         log.info("Index '{}' created.", indexName);
     }

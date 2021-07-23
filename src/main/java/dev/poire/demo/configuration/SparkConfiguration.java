@@ -14,6 +14,12 @@ public class SparkConfiguration {
     private String appName;
     @Value("${demo.spark.uri}")
     private String master;
+    @Value("${demo.spark.elastic.nodes}")
+    private String elasticNodes;
+    @Value("${demo.spark.elastic.port}")
+    private String elasticPort;
+    @Value("${demo.spark.jars}")
+    private String sparkJars;
 
     @Bean
     public SparkConf sparkConf() {
@@ -21,10 +27,9 @@ public class SparkConfiguration {
                 .setAppName(appName)
                 .setMaster(master)
                 .set("pushdown", "true")
-                .set("es.nodes", "elasticsearch")
-                .set("es.port", "9200")
-                .set("spark.jars", "/opt/app-original.jar")
-                ;
+                .set("es.nodes", elasticNodes)
+                .set("es.port", elasticPort)
+                .set("spark.jars", sparkJars);
     }
 
     @Bean

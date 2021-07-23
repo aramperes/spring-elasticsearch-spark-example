@@ -22,7 +22,7 @@ import static org.elasticsearch.spark.rdd.api.java.JavaEsSpark.esRDD;
 @Slf4j
 public class SparkService implements Serializable {
 
-    private final transient JavaSparkContext context;
+    private final JavaSparkContext context;
     private final ObjectMapper objectMapper;
 
     public SparkService(JavaSparkContext context, ObjectMapper objectMapper) {
@@ -37,7 +37,6 @@ public class SparkService implements Serializable {
     public List<String> getCityNames() {
         final SparkSession session = new SparkSession(context.sc());
         return session.read().format("es")
-                .option("pushdown", true)
                 .load("cities")
                 .select("name")
                 .sort(col("name").asc())
@@ -49,8 +48,8 @@ public class SparkService implements Serializable {
 
     public List<Map<String, Object>> populationByCity() {
         final SparkSession session = new SparkSession(context.sc());
-        final Dataset<Row> PEOPLE = session.read().format("es").option("pushdown", true).load("people");
-        final Dataset<Row> CITIES = session.read().format("es").option("pushdown", true).load("cities");
+        final Dataset<Row> PEOPLE = session.read().format("es").load("people");
+        final Dataset<Row> CITIES = session.read().format("es").load("cities");
 
         return PEOPLE
                 .groupBy("city")
@@ -73,8 +72,8 @@ public class SparkService implements Serializable {
 
     public List<Map<String, Object>> populationByCountry() {
         final SparkSession session = new SparkSession(context.sc());
-        final Dataset<Row> PEOPLE = session.read().format("es").option("pushdown", true).load("people");
-        final Dataset<Row> CITIES = session.read().format("es").option("pushdown", true).load("cities");
+        final Dataset<Row> PEOPLE = session.read().format("es").load("people");
+        final Dataset<Row> CITIES = session.read().format("es").load("cities");
 
         return PEOPLE.join(CITIES)
                 .where(PEOPLE.col("city").equalTo(CITIES.col("name")))
